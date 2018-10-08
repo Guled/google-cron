@@ -13,12 +13,21 @@ const app = express();
 // For any request to /public/{some_topic}, push a simple
 // PubSub message to that topic.
 app.get('/publish/:topic', async (req, res) => {
-  const topic = req.params['topic'];
+  req.headers['x-appengine-cron']
 
+  //Secure way to limit to only cron jobs... kinda... need to see if other parts of goolge app enginer can trick it into running
+  //Also address duplication issues 
+  // if (req.headers['x-appengine-cron']){
+  //   console.log("from google app engine");
+  // } else {
+  //   console.log("outside source");
+  // }
+
+  const topic = req.params['topic'];
   try {
     await pubsubClient.topic(topic)
         .publisher()
-        .publish(Buffer.from(''));
+        .publish(Buffer.from(' '));
 
     res.status(200).send('Published to ' + topic).end();
   } catch (e) {

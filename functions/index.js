@@ -24,3 +24,16 @@ exports.hourly_job = functions.pubsub
 
     return true;
   });
+
+  exports.minute_job = functions.pubsub
+    .topic('minute-tick')
+    .onPublish((message) => {
+      if (message.data) {
+        const dataString = Buffer.from(message.data, 'base64').toString();
+        console.log(`Message Data: ${dataString}`);
+      }
+
+      // console.log(`Successfully ran function`)
+
+      return true;
+    });
